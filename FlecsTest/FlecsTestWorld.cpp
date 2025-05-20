@@ -16,9 +16,12 @@ constexpr float dayTicks = (24 * 60 * 60) / deltaTime; // The amount of ticks ne
 
 void FlecsTestWorld::Start() const
 {
-    _world.set_threads(24);
+    flecs::log::set_level(1);
     
-    for (int i = 0; i < 10000; i++)
+    _world.set_threads(24);
+    _world.set(flecs::Rest{});
+    
+    for (int i = 0; i < 1000; i++)
     {
         _world.entity()
             .set<Countdown>({ GetRandomCountdown(50, 60) })
@@ -32,8 +35,9 @@ void FlecsTestWorld::Start() const
     std::cout << "Start processing for " << static_cast<int>(dayTicks) <<  " ticks..." << std::endl;
     const auto start = std::chrono::high_resolution_clock::now();
     
-    for (int i = 0; i < static_cast<int>(dayTicks); i++)
-        _world.progress(deltaTime);
+    // for (int i = 0; i < static_cast<int>(dayTicks); i++)
+    while (true)
+        _world.progress(0.1f);
     
     const auto finish = std::chrono::high_resolution_clock::now();
     std::cout << "Total Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(finish-start).count() << "ms\n";
